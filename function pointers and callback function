@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+
+// A function that adds two numbers
+int add(int a, int b) {
+    return a + b;
+}
+
+// A function that multiplies two numbers
+int multiply(int a, int b) {
+    return a * b;
+}
+
+// A function that accepts a function pointer as a parameter and calls it
+int calculate(int x, int y, int (*operation)(int, int)) {
+    return operation(x, y);  // Calls the passed function
+}
+
+int main() {
+    int num1, num2;
+
+    cout << "Enter two numbers: ";
+    cin >> num1 >> num2;
+
+    // Using function pointer for addition
+    cout << "Addition: " << calculate(num1, num2, add) << endl;
+
+    // Using function pointer for multiplication
+    cout << "Multiplication: " << calculate(num1, num2, multiply) << endl;
+
+    return 0;
+}
