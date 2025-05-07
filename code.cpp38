@@ -1,0 +1,62 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+#include <sstream>
+
+// Function to trim whitespace
+std::string trim(const std::string& str) {
+    const char* whitespace = " \t\n\r";
+    size_t start = str.find_first_not_of(whitespace);
+    size_t end = str.find_last_not_of(whitespace);
+    return (start == std::string::npos) ? "" : str.substr(start, end - start + 1);
+}
+
+// Function to read configuration file into a map
+std::map<std::string, std::string> readConfig(const std::string& filename) {
+    std::ifstream configFile(filename);
+    std::map<std::string, std::string> settings;
+    std::string line;
+
+    if (!configFile) {
+        std::cerr << "Could not open config file." << std::endl;
+        return settings;
+    }
+
+    while (std::getline(configFile, line)) {
+        std::istringstream iss(line);
+        std::string key, value;
+        if (std::getline(iss, key, '=') && std::getline(iss, value)) {
+            settings[trim(key)] = trim(value);
+        }
+    }
+
+    return settings;
+}
+
+int main() {
+    std::map<std::string, std::string> config = readConfig("config.txt");
+
+    // Extract values from config
+    std::string mode = config["mode"];
+    int maxItems = config.count("max_items") ? std::stoi(config["max_items"]) : 10;
+    bool displayHeader = config["display_header"] == "yes";
+
+    // Use settings to control behavior
+    if (displayHeader) {
+        std::cout << "=== Welcome to the Program ===\n";
+    }
+
+    std::cout << "Operating in " << mode << " mode.\n";
+    std::cout << "Displaying " << maxItems << " items:\n";
+
+    for (int i = 1; i <= maxItems; ++i) {
+        if (mode == "verbose") {
+            std::cout << "Item " << i << ": This is a detailed description.\n";
+        } else {
+            std::cout << "Item " << i << "\n";
+        }
+    }
+
+    return 0;
+}
