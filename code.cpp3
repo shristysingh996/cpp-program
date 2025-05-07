@@ -1,0 +1,45 @@
+#include <iostream>
+using namespace std;
+
+// Abstract base class
+class Device {
+public:
+    // Pure virtual function
+    virtual void turnOn() const = 0;
+
+    // Virtual destructor
+    virtual ~Device() {}
+};
+
+// Derived class: Laptop
+class Laptop : public Device {
+public:
+    void turnOn() const override {
+        cout << "Laptop is powering up. Loading operating system..." << endl;
+    }
+};
+
+// Derived class: Smartphone
+class Smartphone : public Device {
+public:
+    void turnOn() const override {
+        cout << "Smartphone is starting. Displaying home screen..." << endl;
+    }
+};
+
+// Main function
+int main() {
+    // Use base class pointers for polymorphism
+    Device* device;
+
+    Laptop myLaptop;
+    Smartphone myPhone;
+
+    device = &myLaptop;
+    device->turnOn();
+
+    device = &myPhone;
+    device->turnOn();
+
+    return 0;
+}
