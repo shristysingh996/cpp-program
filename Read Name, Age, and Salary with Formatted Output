@@ -1,0 +1,36 @@
+#include <iostream>
+#include <iomanip>  // For manipulators like setw, setprecision
+
+using namespace std;
+
+int main() {
+    // Declare variables
+    string name;
+    int age;
+    double salary;
+
+    // Read user input
+    cout << "Enter your name: ";
+    getline(cin, name);  // Use getline to allow spaces in the name
+
+    cout << "Enter your age: ";
+    cin >> age;
+
+    cout << "Enter your salary: ";
+    cin >> salary;
+
+    // Display the formatted output
+    cout << "\nFormatted Information:\n";
+    
+    // Display Name with width formatting
+    cout << setw(15) << left << "Name: " << name << endl;
+
+    // Display Age with width formatting
+    cout << setw(15) << left << "Age: " << age << endl;
+
+    // Display Salary with width, precision, and fixed formatting
+    cout << setw(15) << left << "Salary: "
+         << fixed << setprecision(2) << salary << endl;
+
+    return 0;
+}
