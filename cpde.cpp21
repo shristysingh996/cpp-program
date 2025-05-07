@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Function template for matrix addition
+template <typename T>
+vector<vector<T>> addMatrices(const vector<vector<T>>& matrix1, const vector<vector<T>>& matrix2) {
+    int rows = matrix1.size();
+    int cols = matrix1[0].size();
+    
+    vector<vector<T>> result(rows, vector<T>(cols));
+    
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            result[i][j] = matrix1[i][j] + matrix2[i][j];
+        }
+    }
+    return result;
+}
+
+// Function template for matrix multiplication
+template <typename T>
+vector<vector<T>> multiplyMatrices(const vector<vector<T>>& matrix1, const vector<vector<T>>& matrix2) {
+    int rows1 = matrix1.size();
+    int cols1 = matrix1[0].size();
+    int rows2 = matrix2.size();
+    int cols2 = matrix2[0].size();
+    
+    // Ensure matrix multiplication is possible (cols of matrix1 == rows of matrix2)
+    if (cols1 != rows2) {
+        throw invalid_argument("Matrix multiplication is not possible: incompatible dimensions.");
+    }
+
+    vector<vector<T>> result(rows1, vector<T>(cols2, 0));
+    
+    for (int i = 0; i < rows1; ++i) {
+        for (int j = 0; j < cols2; ++j) {
+            for (int k = 0; k < cols1; ++k) {
+                result[i][j] += matrix1[i][k] * matrix2[k][j];
+            }
+        }
+    }
+    return result;
+}
+
+// Function to display the matrix
+template <typename T>
+void displayMatrix(const vector<vector<T>>& matrix) {
+    for (const auto& row : matrix) {
+        for (const auto& elem : row) {
+            cout << elem << " ";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    try {
+        // Define two 2x2 matrices for addition
+        vector<vector<int>> matrix1 = {{1, 2}, {3, 4}};
+        vector<vector<int>> matrix2 = {{5, 6}, {7, 8}};
+
+        // Add the matrices
+        cout << "Matrix 1 + Matrix 2:" << endl;
+        auto resultAddition = addMatrices(matrix1, matrix2);
+        displayMatrix(resultAddition);
+
+        // Define two matrices for multiplication (2x2 and 2x2)
+        vector<vector<int>> matrix3 = {{1, 2}, {3, 4}};
+        vector<vector<int>> matrix4 = {{2, 0}, {1, 2}};
+
+        // Multiply the matrices
+        cout << "\nMatrix 3 * Matrix 4:" << endl;
+        auto resultMultiplication = multiplyMatrices(matrix3, matrix4);
+        displayMatrix(resultMultiplication);
+
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
