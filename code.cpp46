@@ -1,0 +1,53 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+// XOR encryption function
+void encryptDecryptFile(const std::string& inputFile, const std::string& outputFile, char key) {
+    std::ifstream in(inputFile, std::ios::in | std::ios::binary);
+    std::ofstream out(outputFile, std::ios::out | std::ios::binary);
+
+    if (!in || !out) {
+        std::cerr << "Error opening file(s).\n";
+        return;
+    }
+
+    char ch;
+    while (in.get(ch)) {
+        // XOR each byte with the key to encrypt/decrypt
+        out.put(ch ^ key);
+    }
+
+    in.close();
+    out.close();
+    std::cout << "File encryption/decryption complete.\n";
+}
+
+int main() {
+    int choice;
+    std::string inputFile, outputFile;
+    char key;
+
+    std::cout << "Enter the encryption/decryption key (a single character): ";
+    std::cin >> key;
+    std::cin.ignore(); // Ignore newline left in buffer
+
+    std::cout << "1. Encrypt\n2. Decrypt\nChoose an option: ";
+    std::cin >> choice;
+    std::cin.ignore();
+
+    std::cout << "Enter the input file name: ";
+    std::getline(std::cin, inputFile);
+    std::cout << "Enter the output file name: ";
+    std::getline(std::cin, outputFile);
+
+    if (choice == 1) {
+        encryptDecryptFile(inputFile, outputFile, key);
+    } else if (choice == 2) {
+        encryptDecryptFile(inputFile, outputFile, key);
+    } else {
+        std::cerr << "Invalid option.\n";
+    }
+
+    return 0;
+}
