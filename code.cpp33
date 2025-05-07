@@ -1,0 +1,47 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    const std::string filename = "truncation_example.txt";
+
+    // Step 1: Open the file for writing with some initial content
+    std::ofstream outFile(filename);
+    if (!outFile) {
+        std::cerr << "Error: Could not open the file for initial writing!" << std::endl;
+        return 1;
+    }
+    outFile << "This is the initial content in the file.\n";
+    outFile << "This content will be erased when the file is opened in truncation mode.\n";
+    outFile.close();  // Close after initial writing
+    std::cout << "Initial content written to the file.\n";
+
+    // Step 2: Open the file in truncation mode (erases existing content)
+    std::ofstream outFileTrunc(filename, std::ios::out | std::ios::trunc);
+    if (!outFileTrunc) {
+        std::cerr << "Error: Could not open the file in truncation mode!" << std::endl;
+        return 1;
+    }
+
+    // Step 3: Write new content to the file (existing content is erased)
+    outFileTrunc << "This is the new content written after truncating the file.\n";
+    outFileTrunc.close();  // Close after writing
+
+    std::cout << "\nNew content written after truncation.\n";
+
+    // Step 4: Read the file to show the effect of truncation
+    std::ifstream inFile(filename);
+    if (!inFile) {
+        std::cerr << "Error: Could not open the file for reading!" << std::endl;
+        return 1;
+    }
+
+    std::cout << "\nReading from the file after truncation:\n";
+    std::string line;
+    while (std::getline(inFile, line)) {
+        std::cout << line << std::endl;
+    }
+    inFile.close();  // Close after reading
+
+    return 0;
+}
