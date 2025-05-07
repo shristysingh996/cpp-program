@@ -1,0 +1,90 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cctype>
+
+// Compress function using RLE
+void compressFile(const std::string& inputFile, const std::string& outputFile) {
+    std::ifstream in(inputFile);
+    std::ofstream out(outputFile);
+    
+    if (!in || !out) {
+        std::cerr << "Error opening file(s).\n";
+        return;
+    }
+
+    char current, previous;
+    int count = 1;
+    
+    in.get(previous);
+    while (in.get(current)) {
+        if (current == previous) {
+            count++;
+        } else {
+            out << previous << count;
+            previous = current;
+            count = 1;
+        }
+    }
+
+    if (in.eof()) {
+        out << previous << count;
+    }
+
+    in.close();
+    out.close();
+    std::cout << "Compression complete.\n";
+}
+
+// Decompress function for RLE
+void decompressFile(const std::string& inputFile, const std::string& outputFile) {
+    std::ifstream in(inputFile);
+    std::ofstream out(outputFile);
+
+    if (!in || !out) {
+        std::cerr << "Error opening file(s).\n";
+        return;
+    }
+
+    char ch;
+    while (in.get(ch)) {
+        std::string countStr;
+        char next;
+        while (in.get(next) && std::isdigit(next)) {
+            countStr += next;
+        }
+        int count = std::stoi(countStr);
+        for (int i = 0; i < count; ++i) {
+            out.put(ch);
+        }
+        if (!in.eof()) in.unget();
+    }
+
+    in.close();
+    out.close();
+    std::cout << "Decompression complete.\n";
+}
+
+int main() {
+    int choice;
+    std::string inputFile, outputFile;
+
+    std::cout << "1. Compress\n2. Decompress\nChoose an option: ";
+    std::cin >> choice;
+    std::cin.ignore();
+
+    std::cout << "Enter input file name: ";
+    std::getline(std::cin, inputFile);
+    std::cout << "Enter output file name: ";
+    std::getline(std::cin, outputFile);
+
+    if (choice == 1) {
+        compressFile(inputFile, outputFile);
+    } else if (choice == 2) {
+        decompressFile(inputFile, outputFile);
+    } else {
+        std::cerr << "Invalid option.\n";
+    }
+
+    return 0;
+}
