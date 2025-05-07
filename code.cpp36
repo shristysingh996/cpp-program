@@ -1,0 +1,75 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+
+struct Student {
+    int id;
+    char name[50];
+    int age;
+};
+
+void printStudent(const Student& student) {
+    std::cout << "ID: " << student.id << ", Name: " << student.name << ", Age: " << student.age << std::endl;
+}
+
+int main() {
+    const std::string filename = "students.dat";
+
+    // Sample data for students
+    Student students[] = {
+        {1, "Alice", 20},
+        {2, "Bob", 22},
+        {3, "Charlie", 21},
+        {4, "David", 23}
+    };
+
+    // --- Write Data to the Binary File ---
+    std::ofstream outFile(filename, std::ios::out | std::ios::binary);
+    if (!outFile) {
+        std::cerr << "Error: Could not open the file for writing!" << std::endl;
+        return 1;
+    }
+
+    // Write each Student record to the file
+    for (int i = 0; i < 4; ++i) {
+        outFile.write(reinterpret_cast<char*>(&students[i]), sizeof(Student));
+    }
+    outFile.close();
+    std::cout << "Initial students data written to the file.\n";
+
+    // --- Update a Specific Student Record (e.g., update Bob's age) ---
+    int positionToUpdate = 1; // Update Bob's record (index 1)
+    Student updatedStudent = {2, "Bob", 25}; // New age for Bob
+
+    // Open the file in read/write mode
+    std::ofstream outFileModify(filename, std::ios::in | std::ios::out | std::ios::binary);
+    if (!outFileModify) {
+        std::cerr << "Error: Could not open the file for modifying!" << std::endl;
+        return 1;
+    }
+
+    // Seek to the position of the student we want to update
+    outFileModify.seekp(positionToUpdate * sizeof(Student), std::ios::beg);  // Move the pointer to Bob's record
+    outFileModify.write(reinterpret_cast<char*>(&updatedStudent), sizeof(Student)); // Write the updated record
+
+    outFileModify.close();
+    std::cout << "\nStudent record updated at position " << positionToUpdate << " successfully.\n";
+
+    // --- Read All Data to Verify the Update ---
+    std::ifstream inFile(filename, std::ios::in | std::ios::binary);
+    if (!inFile) {
+        std::cerr << "Error: Could not open the file for reading!" << std::endl;
+        return 1;
+    }
+
+    std::cout << "\nReading all student data from the file after the update:\n";
+    Student student;
+    for (int i = 0; i < 4; ++i) {
+        inFile.read(reinterpret_cast<char*>(&student), sizeof(Student));
+        printStudent(student);  // Display the student data
+    }
+
+    inFile.close();
+
+    return 0;
+}
