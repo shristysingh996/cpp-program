@@ -1,0 +1,106 @@
+#include <iostream>
+#include <stdexcept>  // For handling exceptions
+using namespace std;
+
+template <typename T>
+class Stack {
+private:
+    T* data;            // Array to hold the stack elements
+    int capacity;       // Maximum number of elements the stack can hold
+    int top;            // Index to the top of the stack
+
+public:
+    // Constructor
+    Stack(int size) {
+        capacity = size;
+        data = new T[capacity];
+        top = -1;
+    }
+
+    // Destructor
+    ~Stack() {
+        delete[] data;
+    }
+
+    // Push an element onto the stack
+    void push(const T& value) {
+        if (top >= capacity - 1) {
+            throw overflow_error("Stack Overflow: Cannot push, stack is full.");
+        }
+        data[++top] = value;
+    }
+
+    // Pop an element from the stack
+    T pop() {
+        if (top == -1) {
+            throw underflow_error("Stack Underflow: Cannot pop, stack is empty.");
+        }
+        return data[top--];
+    }
+
+    // Peek at the top element without popping it
+    T peek() const {
+        if (top == -1) {
+            throw underflow_error("Stack Underflow: Cannot peek, stack is empty.");
+        }
+        return data[top];
+    }
+
+    // Check if the stack is empty
+    bool isEmpty() const {
+        return top == -1;
+    }
+
+    // Get the current size of the stack
+    int size() const {
+        return top + 1;
+    }
+
+    // Get the maximum capacity of the stack
+    int getCapacity() const {
+        return capacity;
+    }
+};
+
+// Main function to test the Stack class
+int main() {
+    try {
+        // Create a stack for integers with a capacity of 3
+        Stack<int> intStack(3);
+
+        cout << "Pushing elements onto the stack...\n";
+        intStack.push(10);
+        intStack.push(20);
+        intStack.push(30);
+
+        // This will throw an exception because the stack is full
+        intStack.push(40);
+
+    } catch (const exception& e) {
+        cout << "Exception: " << e.what() << endl;
+    }
+
+    try {
+        // Create another stack for strings with a capacity of 2
+        Stack<string> stringStack(2);
+
+        cout << "\nPushing elements onto the string stack...\n";
+        stringStack.push("Hello");
+        stringStack.push("World");
+
+        // Peek at the top element
+        cout << "Top element (peek): " << stringStack.peek() << endl;
+
+        // Pop the top element
+        cout << "Popped element: " << stringStack.pop() << endl;
+        cout << "Popped element: " << stringStack.pop() << endl;
+
+        // This will throw an exception because the stack is empty
+        stringStack.pop();
+
+    } catch (const exception& e) {
+        cout << "Exception: " << e.what() << endl;
+    }
+
+    return 0;
+}
