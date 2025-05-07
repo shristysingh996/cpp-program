@@ -1,0 +1,175 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Base class
+class BankAccount {
+protected:
+    string accountHolder;
+    int accountNumber;
+    double balance;
+
+public:
+    BankAccount(string name, int accNo, double bal)
+        : accountHolder(name), accountNumber(accNo), balance(bal) {}
+
+    virtual void deposit(double amount) {
+        balance += amount;
+        cout << "Deposited: $" << amount << endl;
+    }
+
+    virtual void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Withdrawn: $" << amount << endl;
+        } else {
+            cout << "Insufficient balance.\n";
+        }
+    }
+
+    virtual void display() const {
+        cout << "Account Holder: " << accountHolder << endl;
+        cout << "Account Number: " << accountNumber << endl;
+        cout << "Balance: $" << balance << endl;
+    }
+
+    virtual ~BankAccount() {}
+};
+
+// Derived class: SavingsAccount
+class SavingsAccount : public BankAccount {
+public:
+    SavingsAccount(string name, int accNo, double bal)
+        : BankAccount(name, accNo, bal) {}
+
+    void display() const override {
+        cout << "[Savings Account]\n";
+        BankAccount::display();
+    }
+};
+
+// Derived class: CurrentAccount
+class CurrentAccount : public BankAccount {
+public:
+    CurrentAccount(string name, int accNo, double bal)
+        : BankAccount(name, accNo, bal) {}
+
+    void withdraw(double amount) override {
+        const double overdraftLimit = 500.0;
+        if (balance + overdraftLimit >= amount) {
+            balance -= amount;
+            cout << "Withdrawn with overdraft: $" << amount << endl;
+        } else {
+            cout << "Overdraft limit exceeded.\n";
+        }
+    }
+
+    void display() const override {
+        cout << "[Current Account]\n";
+        BankAccount::display();
+    }
+};
+
+// Main program with menu
+int main() {
+    vector<BankAccount*> accounts;
+    int choice;
+
+    do {
+        cout << "\n--- Bank Account Management ---\n";
+        cout << "1. Create Savings Account\n";
+        cout << "2. Create Current Account\n";
+        cout << "3. Deposit\n";
+        cout << "4. Withdraw\n";
+        cout << "5. Display Account Details\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        int accNo;
+        string name;
+        double amount, balance;
+        bool found = false;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter account holder name: ";
+                cin >> name;
+                cout << "Enter account number: ";
+                cin >> accNo;
+                cout << "Enter initial balance: ";
+                cin >> balance;
+                accounts.push_back(new SavingsAccount(name, accNo, balance));
+                cout << "Savings account created.\n";
+                break;
+
+            case 2:
+                cout << "Enter account holder name: ";
+                cin >> name;
+                cout << "Enter account number: ";
+                cin >> accNo;
+                cout << "Enter initial balance: ";
+                cin >> balance;
+                accounts.push_back(new CurrentAccount(name, accNo, balance));
+                cout << "Current account created.\n";
+                break;
+
+            case 3:
+                cout << "Enter account number to deposit into: ";
+                cin >> accNo;
+                cout << "Enter amount to deposit: ";
+                cin >> amount;
+                for (auto acc : accounts) {
+                    if (accNo == acc->accountNumber) {
+                        acc->deposit(amount);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) cout << "Account not found.\n";
+                break;
+
+            case 4:
+                cout << "Enter account number to withdraw from: ";
+                cin >> accNo;
+                cout << "Enter amount to withdraw: ";
+                cin >> amount;
+                for (auto acc : accounts) {
+                    if (accNo == acc->accountNumber) {
+                        acc->withdraw(amount);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) cout << "Account not found.\n";
+                break;
+
+            case 5:
+                cout << "Enter account number to display: ";
+                cin >> accNo;
+                for (auto acc : accounts) {
+                    if (accNo == acc->accountNumber) {
+                        acc->display();
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) cout << "Account not found.\n";
+                break;
+
+            case 6:
+                cout << "Exiting program...\n";
+                break;
+
+            default:
+                cout << "Invalid choice.\n";
+        }
+    } while (choice != 6);
+
+    // Clean up memory
+    for (auto acc : accounts) {
+        delete acc;
+    }
+
+    return 0;
+}
