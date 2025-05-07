@@ -1,0 +1,87 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+
+struct Employee {
+    int id;
+    char name[50];
+};
+
+int main() {
+    const std::string filename = "employees.dat";
+    
+    // Create some sample data
+    Employee employees[] = {
+        {101, "Alice"},
+        {102, "Bob"},
+        {103, "Charlie"},
+        {104, "David"}
+    };
+    
+    // --- Write Data to the File Using Random Access ---
+    std::ofstream outFile(filename, std::ios::out | std::ios::binary);
+    if (!outFile) {
+        std::cerr << "Error: Could not open the file for writing!" << std::endl;
+        return 1;
+    }
+
+    // Write employee data to the file
+    for (int i = 0; i < 4; ++i) {
+        outFile.write(reinterpret_cast<char*>(&employees[i]), sizeof(Employee));
+    }
+
+    outFile.close();
+    std::cout << "Data written to file successfully.\n";
+
+    // --- Read Data from Specific Position Using Random Access ---
+    std::ifstream inFile(filename, std::ios::in | std::ios::binary);
+    if (!inFile) {
+        std::cerr << "Error: Could not open the file for reading!" << std::endl;
+        return 1;
+    }
+
+    // Read employee data at a specific position (e.g., 2nd employee)
+    int position = 1;  // To read the second employee (index 1)
+    inFile.seekg(position * sizeof(Employee), std::ios::beg);  // Move to the second employee's position
+    Employee employee;
+    inFile.read(reinterpret_cast<char*>(&employee), sizeof(Employee));
+    
+    std::cout << "\nData read from file at position " << position << ":\n";
+    std::cout << "ID: " << employee.id << ", Name: " << employee.name << std::endl;
+
+    // --- Modify Data at a Specific Position ---
+    inFile.close();
+    std::ofstream outFileModify(filename, std::ios::in | std::ios::out | std::ios::binary);
+    if (!outFileModify) {
+        std::cerr << "Error: Could not open the file for reading and writing!" << std::endl;
+        return 1;
+    }
+
+    // Modify the data at the second employee's position (index 1)
+    position = 1;  // Modify the second employee
+    inFile.seekg(position * sizeof(Employee), std::ios::beg);  // Move to the second employee's position
+    Employee newEmployee = {999, "Eve"};  // New data for employee at position 1
+    outFileModify.seekp(position * sizeof(Employee), std::ios::beg);  // Move the put pointer to the correct position
+    outFileModify.write(reinterpret_cast<char*>(&newEmployee), sizeof(Employee));
+    
+    outFileModify.close();
+    std::cout << "\nData modified at position " << position << " successfully.\n";
+
+    // --- Read Modified Data ---
+    inFile.open(filename, std::ios::in | std::ios::binary);
+    if (!inFile) {
+        std::cerr << "Error: Could not reopen the file for reading!" << std::endl;
+        return 1;
+    }
+
+    std::cout << "\nReading the modified file:\n";
+    for (int i = 0; i < 4; ++i) {
+        inFile.seekg(i * sizeof(Employee), std::ios::beg);  // Move to the correct position
+        inFile.read(reinterpret_cast<char*>(&employee), sizeof(Employee));
+        std::cout << "ID: " << employee.id << ", Name: " << employee.name << std::endl;
+    }
+
+    inFile.close();
+
+    return 0;
+}
