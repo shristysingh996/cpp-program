@@ -1,0 +1,30 @@
+#include <iostream>
+#include <iomanip>  // For std::setw
+
+int main() {
+    // Display the header of the table
+    std::cout << std::left  // Left-align the text in the columns
+              << std::setw(15) << "Name"
+              << std::setw(10) << "Age"
+              << std::setw(15) << "Occupation"
+              << std::setw(10) << "Salary"
+              << std::endl;
+
+    // Data for the table
+    std::string names[] = {"John Doe", "Jane Smith", "Alice Brown", "Bob White"};
+    int ages[] = {30, 28, 35, 40};
+    std::string occupations[] = {"Engineer", "Doctor", "Artist", "Chef"};
+    double salaries[] = {75000.50, 90000.75, 62000.25, 45000.90};
+
+    // Display the data in the table
+    for (int i = 0; i < 4; ++i) {
+        std::cout << std::left
+                  << std::setw(15) << names[i]
+                  << std::setw(10) << ages[i]
+                  << std::setw(15) << occupations[i]
+                  << std::setw(10) << std::fixed << std::setprecision(2) << salaries[i]
+                  << std::endl;
+    }
+
+    return 0;
+}
