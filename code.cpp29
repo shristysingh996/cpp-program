@@ -1,0 +1,41 @@
+#include <iostream>
+#include <fstream>  // For file handling (ifstream and ofstream)
+#include <string>
+
+int main() {
+    // Source and destination file names
+    std::string sourceFile = "source.txt";
+    std::string destinationFile = "destination.txt";
+
+    // Open the source file for reading
+    std::ifstream inputFile(sourceFile, std::ios::in);
+    
+    // Check if the source file is opened successfully
+    if (!inputFile) {
+        std::cerr << "Error: Could not open the source file!" << std::endl;
+        return 1;
+    }
+
+    // Open the destination file for writing
+    std::ofstream outputFile(destinationFile, std::ios::out);
+    
+    // Check if the destination file is opened successfully
+    if (!outputFile) {
+        std::cerr << "Error: Could not open the destination file!" << std::endl;
+        return 1;
+    }
+
+    // Read from the source file and write to the destination file
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        outputFile << line << std::endl;  // Write the line to the destination file
+    }
+
+    std::cout << "Contents have been copied from '" << sourceFile << "' to '" << destinationFile << "'." << std::endl;
+
+    // Close both files
+    inputFile.close();
+    outputFile.close();
+
+    return 0;
+}
