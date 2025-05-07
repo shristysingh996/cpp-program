@@ -1,0 +1,51 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <iomanip>
+
+void processCSV(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Error opening file.\n";
+        return;
+    }
+
+    std::string line;
+    std::vector<std::vector<std::string>> data;
+
+    // Read file line by line
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string cell;
+        std::vector<std::string> row;
+
+        // Split line by commas
+        while (std::getline(ss, cell, ',')) {
+            row.push_back(cell);
+        }
+        data.push_back(row);
+    }
+
+    file.close();
+
+    // Display the CSV data in table format
+    std::cout << "\n--- CSV Content ---\n";
+    for (const auto& row : data) {
+        for (const auto& col : row) {
+            std::cout << std::setw(15) << col;
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "--- End of CSV ---\n";
+}
+
+int main() {
+    std::string filename;
+    std::cout << "Enter CSV filename (e.g., data.csv): ";
+    std::getline(std::cin, filename);
+
+    processCSV(filename);
+    return 0;
+}
