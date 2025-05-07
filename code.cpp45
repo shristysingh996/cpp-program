@@ -1,0 +1,49 @@
+#include <iostream>
+#include <fcntl.h>      // open
+#include <sys/mman.h>   // mmap
+#include <sys/stat.h>   // fstat
+#include <unistd.h>     // close
+#include <cstring>
+
+int main() {
+    const char* filename = "largefile.txt";
+
+    // Open file
+    int fd = open(filename, O_RDONLY);
+    if (fd == -1) {
+        std::cerr << "Failed to open file.\n";
+        return 1;
+    }
+
+    // Get file size
+    struct stat sb;
+    if (fstat(fd, &sb) == -1) {
+        std::cerr << "Failed to get file size.\n";
+        close(fd);
+        return 1;
+    }
+
+    size_t fileSize = sb.st_size;
+
+    // Map file to memory
+    char* data = static_cast<char*>(mmap(NULL, fileSize, PROT_READ, MAP_PRIVATE, fd, 0));
+    if (data == MAP_FAILED) {
+        std::cerr << "Memory mapping failed.\n";
+        close(fd);
+        return 1;
+    }
+
+    // Example processing: count number of lines
+    size_t lineCount = 0;
+    for (size_t i = 0; i < fileSize; ++i) {
+        if (data[i] == '\n') lineCount++;
+    }
+
+    std::cout << "Total lines: " << lineCount << "\n";
+
+    // Clean up
+    munmap(data, fileSize);
+    close(fd);
+
+    return 0;
+}
