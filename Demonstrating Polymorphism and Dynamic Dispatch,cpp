@@ -1,0 +1,60 @@
+#include <iostream>
+#include <cmath>  // For M_PI
+
+using namespace std;
+
+// Base class
+class Shape {
+public:
+    // Virtual function for area calculation
+    virtual double area() const {
+        return 0.0;  // Default implementation, can be overridden by derived classes
+    }
+
+    // Virtual destructor for proper cleanup
+    virtual ~Shape() {}
+};
+
+// Derived class Circle
+class Circle : public Shape {
+private:
+    double radius;
+
+public:
+    Circle(double r) : radius(r) {}
+
+    // Overriding area() method for Circle
+    double area() const override {
+        return M_PI * radius * radius;  // Area of circle: πr^2
+    }
+};
+
+// Derived class Rectangle
+class Rectangle : public Shape {
+private:
+    double width, height;
+
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+
+    // Overriding area() method for Rectangle
+    double area() const override {
+        return width * height;  // Area of rectangle: width * height
+    }
+};
+
+int main() {
+    // Create objects of Circle and Rectangle
+    Shape* shape1 = new Circle(5.0);  // Circle with radius 5
+    Shape* shape2 = new Rectangle(4.0, 6.0);  // Rectangle with width 4 and height 6
+
+    // Demonstrating dynamic dispatch: The correct area() function is called
+    cout << "Area of Circle: " << shape1->area() << endl;  // Should call Circle's area
+    cout << "Area of Rectangle: " << shape2->area() << endl;  // Should call Rectangle's area
+
+    // Clean up dynamic memory
+    delete shape1;
+    delete shape2;
+
+    return 0;
+}
