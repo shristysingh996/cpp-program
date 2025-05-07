@@ -1,0 +1,23 @@
+#include <iostream>
+#include <fstream>  // For file handling (ifstream)
+#include <string>
+
+int main() {
+    std::ifstream inputFile("example.txt");  // Open the file "example.txt" for reading
+
+    if (!inputFile) {  // Check if the file was successfully opened
+        std::cerr << "Error: Could not open the file!" << std::endl;
+        return 1;  // Exit if file couldn't be opened
+    }
+
+    std::string line;
+    std::cout << "Contents of the file are:\n";
+
+    // Read the file line by line and print each line
+    while (std::getline(inputFile, line)) {
+        std::cout << line << std::endl;  // Print the current line
+    }
+
+    inputFile.close();  // Close the file after reading
+    return 0;
+}
