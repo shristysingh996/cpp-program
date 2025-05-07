@@ -1,0 +1,92 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Polynomial {
+private:
+    vector<int> coefficients;  // Stores coefficients, where index represents the power of x
+
+public:
+    // Constructor
+    Polynomial(int degree) {
+        coefficients.resize(degree + 1, 0);  // Initialize with zero coefficients
+    }
+
+    // Input polynomial coefficients
+    void input() {
+        for (int i = 0; i < coefficients.size(); ++i) {
+            cout << "Enter coefficient for x^" << i << ": ";
+            cin >> coefficients[i];
+        }
+    }
+
+    // Display polynomial
+    void display() const {
+        for (int i = coefficients.size() - 1; i >= 0; --i) {
+            if (coefficients[i] != 0) {
+                if (i != coefficients.size() - 1) {
+                    cout << (coefficients[i] > 0 ? " + " : " - ");
+                }
+                cout << abs(coefficients[i]);
+                if (i > 0) cout << "x^" << i;
+            }
+        }
+        cout << endl;
+    }
+
+    // Overload + operator for polynomial addition
+    Polynomial operator+(const Polynomial& other) {
+        int maxDegree = max(coefficients.size(), other.coefficients.size());
+        Polynomial result(maxDegree - 1);
+        result.coefficients.resize(maxDegree, 0);
+
+        for (int i = 0; i < maxDegree; ++i) {
+            if (i < coefficients.size()) result.coefficients[i] += coefficients[i];
+            if (i < other.coefficients.size()) result.coefficients[i] += other.coefficients[i];
+        }
+        return result;
+    }
+
+    // Overload * operator for polynomial multiplication
+    Polynomial operator*(const Polynomial& other) {
+        int degree = coefficients.size() + other.coefficients.size() - 2;
+        Polynomial result(degree);
+        
+        for (int i = 0; i < coefficients.size(); ++i) {
+            for (int j = 0; j < other.coefficients.size(); ++j) {
+                result.coefficients[i + j] += coefficients[i] * other.coefficients[j];
+            }
+        }
+        return result;
+    }
+};
+
+int main() {
+    // Create two polynomials
+    Polynomial p1(2);  // Polynomial of degree 2 (ax^2 + bx + c)
+    Polynomial p2(2);  // Polynomial of degree 2 (px^2 + qx + r)
+
+    cout << "Enter coefficients for polynomial 1 (degree 2):\n";
+    p1.input();
+    
+    cout << "Enter coefficients for polynomial 2 (degree 2):\n";
+    p2.input();
+
+    cout << "\nPolynomial 1: ";
+    p1.display();
+
+    cout << "Polynomial 2: ";
+    p2.display();
+
+    // Add the polynomials
+    Polynomial sum = p1 + p2;
+    cout << "\nSum of the polynomials: ";
+    sum.display();
+
+    // Multiply the polynomials
+    Polynomial product = p1 * p2;
+    cout << "\nProduct of the polynomials: ";
+    product.display();
+
+    return 0;
+}
