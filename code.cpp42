@@ -1,0 +1,38 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <exception>
+
+int main() {
+    std::string filename;
+    std::cout << "Enter filename to read: ";
+    std::getline(std::cin, filename);
+
+    std::ifstream file;
+
+    try {
+        // Set exception mask for failbit and badbit
+        file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+        // Attempt to open the file
+        file.open(filename);
+
+        std::string line;
+        std::cout << "\nFile contents:\n";
+
+        // Read file line by line
+        while (std::getline(file, line)) {
+            std::cout << line << std::endl;
+        }
+
+        file.close();
+    }
+    catch (const std::ifstream::failure& e) {
+        std::cerr << "Exception occurred while handling the file: " << e.what() << '\n';
+        if (!file.is_open()) {
+            std::cerr << "Error: Could not open file '" << filename << "'.\n";
+        }
+    }
+
+    return 0;
+}
