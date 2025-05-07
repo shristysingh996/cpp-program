@@ -1,0 +1,74 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Abstract base class
+class Payment {
+protected:
+    double amount;
+
+public:
+    Payment(double amt) : amount(amt) {}
+
+    // Pure virtual function
+    virtual void processPayment() const = 0;
+
+    // Virtual destructor
+    virtual ~Payment() {}
+};
+
+// Derived class: CreditCardPayment
+class CreditCardPayment : public Payment {
+private:
+    string cardNumber;
+    string cardHolder;
+
+public:
+    CreditCardPayment(double amt, string number, string holder)
+        : Payment(amt), cardNumber(number), cardHolder(holder) {}
+
+    void processPayment() const override {
+        cout << "Processing Credit Card Payment\n";
+        cout << "Card Holder: " << cardHolder << "\n";
+        cout << "Card Number: " << cardNumber << "\n";
+        cout << "Amount: $" << amount << "\n";
+    }
+};
+
+// Derived class: DebitCardPayment
+class DebitCardPayment : public Payment {
+private:
+    string bankName;
+    string cardNumber;
+
+public:
+    DebitCardPayment(double amt, string bank, string number)
+        : Payment(amt), bankName(bank), cardNumber(number) {}
+
+    void processPayment() const override {
+        cout << "Processing Debit Card Payment\n";
+        cout << "Bank: " << bankName << "\n";
+        cout << "Card Number: " << cardNumber << "\n";
+        cout << "Amount: $" << amount << "\n";
+    }
+};
+
+// Main function
+int main() {
+    // Create CreditCardPayment and DebitCardPayment objects
+    CreditCardPayment ccp(150.75, "1234-5678-9876-5432", "Alice Smith");
+    DebitCardPayment dcp(200.50, "Global Bank", "4321-8765-6789-1234");
+
+    // Use base class pointer for polymorphism
+    Payment* payment;
+
+    payment = &ccp;
+    payment->processPayment();
+
+    cout << "\n";
+
+    payment = &dcp;
+    payment->processPayment();
+
+    return 0;
+}
