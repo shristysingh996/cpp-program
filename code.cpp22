@@ -1,0 +1,146 @@
+#include <iostream>
+using namespace std;
+
+// Node structure for the binary tree
+template <typename T>
+class Node {
+public:
+    T data;
+    Node<T>* left;
+    Node<T>* right;
+
+    // Constructor to initialize a node
+    Node(T value) {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+// Binary Tree class template
+template <typename T>
+class BinaryTree {
+private:
+    Node<T>* root;
+
+    // Helper function for in-order traversal
+    void inorderHelper(Node<T>* node) {
+        if (node == nullptr) {
+            return;
+        }
+        inorderHelper(node->left);  // Traverse left subtree
+        cout << node->data << " ";   // Print the data of the current node
+        inorderHelper(node->right); // Traverse right subtree
+    }
+
+    // Helper function for insertion
+    Node<T>* insertHelper(Node<T>* node, T value) {
+        // If the tree is empty, return a new node
+        if (node == nullptr) {
+            return new Node<T>(value);
+        }
+
+        // Otherwise, recur down the tree
+        if (value < node->data) {
+            node->left = insertHelper(node->left, value);
+        } else if (value > node->data) {
+            node->right = insertHelper(node->right, value);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // Helper function for searching a value in the tree
+    Node<T>* searchHelper(Node<T>* node, T value) {
+        // Base cases: root is null or the value is present at the node
+        if (node == nullptr || node->data == value)
+            return node;
+
+        // Value is greater than the node's data
+        if (value > node->data)
+            return searchHelper(node->right, value);
+
+        // Value is smaller than the node's data
+        return searchHelper(node->left, value);
+    }
+
+public:
+    // Constructor
+    BinaryTree() {
+        root = nullptr;
+    }
+
+    // Insert function
+    void insert(T value) {
+        root = insertHelper(root, value);
+    }
+
+    // In-order traversal of the tree
+    void inorder() {
+        inorderHelper(root);
+        cout << endl;
+    }
+
+    // Search function
+    Node<T>* search(T value) {
+        return searchHelper(root, value);
+    }
+};
+
+int main() {
+    try {
+        // Create a Binary Tree for integers
+        BinaryTree<int> intTree;
+
+        // Inserting values into the tree
+        intTree.insert(50);
+        intTree.insert(30);
+        intTree.insert(20);
+        intTree.insert(40);
+        intTree.insert(70);
+        intTree.insert(60);
+        intTree.insert(80);
+
+        // In-order traversal of the integer tree
+        cout << "In-order traversal of integer tree: ";
+        intTree.inorder();  // Output: 20 30 40 50 60 70 80
+
+        // Search for a value in the integer tree
+        int valueToSearch = 40;
+        Node<int>* searchResult = intTree.search(valueToSearch);
+        if (searchResult != nullptr) {
+            cout << "Found " << valueToSearch << " in the tree." << endl;
+        } else {
+            cout << valueToSearch << " not found in the tree." << endl;
+        }
+
+        // Create a Binary Tree for strings
+        BinaryTree<string> stringTree;
+
+        // Inserting values into the string tree
+        stringTree.insert("Banana");
+        stringTree.insert("Apple");
+        stringTree.insert("Orange");
+        stringTree.insert("Grape");
+        stringTree.insert("Pineapple");
+
+        // In-order traversal of the string tree
+        cout << "In-order traversal of string tree: ";
+        stringTree.inorder();  // Output: Apple Banana Grape Orange Pineapple
+
+        // Search for a value in the string tree
+        string valueToSearchString = "Orange";
+        Node<string>* searchResultString = stringTree.search(valueToSearchString);
+        if (searchResultString != nullptr) {
+            cout << "Found \"" << valueToSearchString << "\" in the tree." << endl;
+        } else {
+            cout << "\"" << valueToSearchString << "\" not found in the tree." << endl;
+        }
+
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
