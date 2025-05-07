@@ -1,0 +1,43 @@
+#include <iostream>
+using namespace std;
+
+// Base class
+class A {
+public:
+    A() {
+        cout << "A constructor\n";
+    }
+    void showA() {
+        cout << "Class A\n";
+    }
+};
+
+// Derived class B inherits from A
+class B : public A {
+public:
+    B() {
+        cout << "B constructor\n";
+    }
+};
+
+// Derived class C also inherits from A
+class C : public A {
+public:
+    C() {
+        cout << "C constructor\n";
+    }
+};
+
+// Class D inherits from both B and C, which both inherit from A
+class D : public B, public C {
+public:
+    D() {
+        cout << "D constructor\n";
+    }
+};
+
+int main() {
+    cout << "Creating object of D:\n";
+    D objD;  // This will call the constructors of A, B, C, and D
+    return 0;
+}
