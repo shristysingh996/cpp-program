@@ -1,0 +1,63 @@
+#include <iostream>
+#include <fstream>  // For file handling (ofstream, ifstream)
+#include <string>
+
+// Define a complex data structure (struct)
+struct Person {
+    std::string name;
+    int age;
+    double salary;
+
+    // A function to output the Person struct's data for debugging
+    void display() const {
+        std::cout << "Name: " << name << ", Age: " << age << ", Salary: " << salary << std::endl;
+    }
+};
+
+int main() {
+    // Create a complex data structure instance
+    Person p1 = {"John Doe", 30, 50000.50};
+    Person p2 = {"Jane Smith", 28, 60000.75};
+
+    // Open a binary file for writing the data
+    std::ofstream outputFile("person_data.bin", std::ios::binary);
+
+    // Check if the file was opened successfully
+    if (!outputFile) {
+        std::cerr << "Error: Could not open the file for writing!" << std::endl;
+        return 1;
+    }
+
+    // Write the first Person object to the file
+    outputFile.write(reinterpret_cast<char*>(&p1), sizeof(Person));
+    outputFile.write(reinterpret_cast<char*>(&p2), sizeof(Person));
+
+    // Close the file after writing
+    outputFile.close();
+
+    // Now, read the data back from the file
+
+    // Open the file for reading binary data
+    std::ifstream inputFile("person_data.bin", std::ios::binary);
+
+    // Check if the file was opened successfully
+    if (!inputFile) {
+        std::cerr << "Error: Could not open the file for reading!" << std::endl;
+        return 1;
+    }
+
+    // Read the data from the file into new Person objects
+    Person p1Read, p2Read;
+    inputFile.read(reinterpret_cast<char*>(&p1Read), sizeof(Person));
+    inputFile.read(reinterpret_cast<char*>(&p2Read), sizeof(Person));
+
+    // Display the read data
+    std::cout << "Data read from the binary file:" << std::endl;
+    p1Read.display();
+    p2Read.display();
+
+    // Close the file after reading
+    inputFile.close();
+
+    return 0;
+}
