@@ -1,0 +1,47 @@
+#include <iostream>
+using namespace std;
+
+// Base class
+class Shape {
+public:
+    // Virtual destructor to ensure proper cleanup of derived class objects
+    virtual ~Shape() {
+        cout << "Shape Destructor called" << endl;
+    }
+
+    // Virtual function to display information about the shape
+    virtual void display() const {
+        cout << "This is a generic shape." << endl;
+    }
+};
+
+// Derived class
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+
+    // Override display function
+    void display() const override {
+        cout << "This is a circle with radius " << radius << endl;
+    }
+
+    // Destructor for the derived class
+    ~Circle() {
+        cout << "Circle Destructor called" << endl;
+    }
+};
+
+int main() {
+    // Creating a pointer to the base class and assigning it a derived class object
+    Shape* shapePtr = new Circle(5.0);
+
+    // Display information about the shape (calls derived class's display function)
+    shapePtr->display();
+
+    // Delete the base class pointer, which will call both the derived class and base class destructors
+    delete shapePtr;
+
+    return 0;
+}
