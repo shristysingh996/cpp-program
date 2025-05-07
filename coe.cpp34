@@ -1,0 +1,87 @@
+ #include <iostream>
+#include <fstream>
+#include <cstring>
+
+struct Book {
+    int id;
+    char title[50];
+    char author[50];
+};
+
+int main() {
+    const std::string filename = "books.dat";
+
+    // Sample data for books
+    Book books[] = {
+        {1, "C++ Programming", "Bjarne Stroustrup"},
+        {2, "Effective C++", "Scott Meyers"},
+        {3, "Clean Code", "Robert C. Martin"},
+        {4, "The Pragmatic Programmer", "David Thomas"}
+    };
+
+    // --- Write Data to the Binary File Using Random Access ---
+    std::ofstream outFile(filename, std::ios::out | std::ios::binary);
+    if (!outFile) {
+        std::cerr << "Error: Could not open the file for writing!" << std::endl;
+        return 1;
+    }
+
+    // Write each Book record to the file at sequential positions
+    for (int i = 0; i < 4; ++i) {
+        outFile.write(reinterpret_cast<char*>(&books[i]), sizeof(Book));
+    }
+    outFile.close();
+    std::cout << "Books written to file successfully.\n";
+
+    // --- Read and Write Data at Specific Positions ---
+    std::ifstream inFile(filename, std::ios::in | std::ios::binary);
+    if (!inFile) {
+        std::cerr << "Error: Could not open the file for reading!" << std::endl;
+        return 1;
+    }
+
+    // Reading the 2nd book (index 1) in the file
+    int position = 1; // The second book has index 1
+    inFile.seekg(position * sizeof(Book), std::ios::beg);  // Seek to the 2nd book's position
+    Book book;
+    inFile.read(reinterpret_cast<char*>(&book), sizeof(Book));
+
+    std::cout << "\nData read from file at position " << position << ":\n";
+    std::cout << "ID: " << book.id << ", Title: " << book.title << ", Author: " << book.author << std::endl;
+
+    inFile.close();
+
+    // --- Modify Data at Specific Position (e.g., the 3rd book) ---
+    std::ofstream outFileModify(filename, std::ios::in | std::ios::out | std::ios::binary);
+    if (!outFileModify) {
+        std::cerr << "Error: Could not open the file for modifying!" << std::endl;
+        return 1;
+    }
+
+    // Modify the data of the third book (index 2)
+    position = 2; // Modify the 3rd book (index 2)
+    Book newBook = {99, "Introduction to Algorithms", "Thomas H. Cormen"};
+    outFileModify.seekp(position * sizeof(Book), std::ios::beg);  // Seek to the 3rd book's position
+    outFileModify.write(reinterpret_cast<char*>(&newBook), sizeof(Book));
+
+    outFileModify.close();
+    std::cout << "\nData modified at position " << position << " successfully.\n";
+
+    // --- Read the Modified Data ---
+    inFile.open(filename, std::ios::in | std::ios::binary);
+    if (!inFile) {
+        std::cerr << "Error: Could not reopen the file for reading!" << std::endl;
+        return 1;
+    }
+
+    std::cout << "\nReading all books from file after modification:\n";
+    for (int i = 0; i < 4; ++i) {
+        inFile.seekg(i * sizeof(Book), std::ios::beg);  // Seek to the correct book position
+        inFile.read(reinterpret_cast<char*>(&book), sizeof(Book));
+        std::cout << "ID: " << book.id << ", Title: " << book.title << ", Author: " << book.author << std::endl;
+    }
+
+    inFile.close();
+
+    return 0;
+}
