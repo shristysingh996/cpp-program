@@ -1,0 +1,46 @@
+#include <iostream>
+#include <fstream>  // For file handling (ofstream, fstream)
+
+int main() {
+    const std::string filename = "example_output.txt";
+
+    // Open the file for writing using ofstream (output file stream)
+    std::ofstream outFile(filename, std::ios::out);
+
+    if (!outFile) {
+        std::cerr << "Error: Could not open the file for writing!" << std::endl;
+        return 1;
+    }
+
+    // Write some initial content to the file
+    outFile << "This is the first line of text.\n";
+    outFile << "This is the second line of text.\n";
+    outFile << "This is the third line of text.\n";
+    
+    // Use tellp to display the current position of the put pointer (after writing)
+    std::cout << "Position of the put pointer after writing three lines: " << outFile.tellp() << std::endl;
+
+    // Use seekp to move the put pointer to a specific position (e.g., back to the beginning)
+    outFile.seekp(0, std::ios::beg);  // Move the put pointer to the beginning of the file
+
+    // Use tellp again to show the current position of the put pointer (should be 0 now)
+    std::cout << "Position of the put pointer after seeking to the beginning: " << outFile.tellp() << std::endl;
+
+    // Write new data at the beginning of the file (this will overwrite the first line)
+    outFile << "This is a new first line of text.\n";
+
+    // Use seekp to move the put pointer again (e.g., to the end of the file)
+    outFile.seekp(0, std::ios::end);  // Move the pointer to the end of the file
+
+    // Use tellp to display the current position of the put pointer (should be at the end now)
+    std::cout << "Position of the put pointer after seeking to the end: " << outFile.tellp() << std::endl;
+
+    // Write additional content to the file
+    outFile << "This is the fourth line of text added at the end.\n";
+
+    // Close the file after writing
+    outFile.close();
+    std::cout << "File has been written and closed." << std::endl;
+
+    return 0;
+}
