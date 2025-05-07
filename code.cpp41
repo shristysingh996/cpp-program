@@ -1,0 +1,50 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <algorithm>
+
+std::string toLower(const std::string& str) {
+    std::string lowerStr = str;
+    std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+    return lowerStr;
+}
+
+int countWordOccurrences(const std::string& filename, const std::string& targetWord) {
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Error opening file.\n";
+        return -1;
+    }
+
+    std::string word;
+    int count = 0;
+    std::string target = toLower(targetWord);
+
+    while (file >> word) {
+        // Remove punctuation from word
+        word.erase(std::remove_if(word.begin(), word.end(), ::ispunct), word.end());
+        if (toLower(word) == target) {
+            ++count;
+        }
+    }
+
+    file.close();
+    return count;
+}
+
+int main() {
+    std::string filename, word;
+    std::cout << "Enter filename: ";
+    std::getline(std::cin, filename);
+
+    std::cout << "Enter word to search for: ";
+    std::getline(std::cin, word);
+
+    int occurrences = countWordOccurrences(filename, word);
+    if (occurrences >= 0) {
+        std::cout << "The word '" << word << "' occurred " << occurrences << " times in the file.\n";
+    }
+
+    return 0;
+}
