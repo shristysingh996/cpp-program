@@ -1,0 +1,44 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cstring>
+
+struct Student {
+    int id;
+    char name[50];
+    int age;
+};
+
+void printStudent(const Student& student) {
+    std::cout << "ID: " << student.id << ", Name: " << student.name << ", Age: " << student.age << std::endl;
+}
+
+int main() {
+    const std::string filename = "students.dat";
+
+    // Open the binary file for reading
+    std::ifstream inFile(filename, std::ios::in | std::ios::binary);
+    if (!inFile) {
+        std::cerr << "Error: Could not open the file for reading!" << std::endl;
+        return 1;
+    }
+
+    // Step 1: Read all data from the binary file into a vector
+    std::vector<Student> students;
+    Student student;
+
+    // Read the data until the end of the file
+    while (inFile.read(reinterpret_cast<char*>(&student), sizeof(Student))) {
+        students.push_back(student);
+    }
+
+    // Step 2: Display the students in reverse order
+    std::cout << "Displaying students in reverse order:\n";
+    for (int i = students.size() - 1; i >= 0; --i) {
+        printStudent(students[i]);  // Display the student
+    }
+
+    inFile.close();
+
+    return 0;
+}
