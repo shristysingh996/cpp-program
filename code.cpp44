@@ -1,0 +1,52 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
+void mergeFiles(const std::vector<std::string>& inputFiles, const std::string& outputFile) {
+    std::ofstream out(outputFile, std::ios::out);
+    if (!out) {
+        std::cerr << "Failed to open output file: " << outputFile << "\n";
+        return;
+    }
+
+    for (const std::string& file : inputFiles) {
+        std::ifstream in(file);
+        if (!in) {
+            std::cerr << "Failed to open input file: " << file << "\n";
+            continue;
+        }
+
+        out << "---- Start of " << file << " ----\n";
+        std::string line;
+        while (std::getline(in, line)) {
+            out << line << '\n';
+        }
+        out << "---- End of " << file << " ----\n\n";
+        in.close();
+    }
+
+    out.close();
+    std::cout << "Files merged into: " << outputFile << "\n";
+}
+
+int main() {
+    int fileCount;
+    std::cout << "Enter number of files to merge: ";
+    std::cin >> fileCount;
+    std::cin.ignore();
+
+    std::vector<std::string> inputFiles(fileCount);
+    for (int i = 0; i < fileCount; ++i) {
+        std::cout << "Enter name of file " << (i + 1) << ": ";
+        std::getline(std::cin, inputFiles[i]);
+    }
+
+    std::string outputFile;
+    std::cout << "Enter name of the output file: ";
+    std::getline(std::cin, outputFile);
+
+    mergeFiles(inputFiles, outputFile);
+
+    return 0;
+}
