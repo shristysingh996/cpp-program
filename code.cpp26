@@ -1,0 +1,30 @@
+#include <iostream>
+#include <iomanip>  // For std::setprecision, std::fixed, and std::scientific
+
+int main() {
+    double num = 123.456789;
+
+    std::cout << "Original number: " << num << std::endl;
+
+    // Set precision to 2 decimal places
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "Fixed precision (2 decimal places): " << num << std::endl;
+code
+    // Set precision to 4 decimal places
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "Fixed precision (4 decimal places): " << num << std::endl;
+
+    // Set precision to 6 decimal places
+    std::cout << std::fixed << std::setprecision(6);
+    std::cout << "Fixed precision (6 decimal places): " << num << std::endl;
+
+    // Using scientific notation with precision of 3
+    std::cout << std::scientific << std::setprecision(3);
+    std::cout << "Scientific notation (3 decimal places): " << num << std::endl;
+
+    // Reset the format to default
+    std::cout << std::defaultfloat;
+    std::cout << "Default format: " << num << std::endl;
+
+    return 0;
+}
