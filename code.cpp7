@@ -1,0 +1,43 @@
+#include <iostream>
+using namespace std;
+
+template <typename T>
+class Stack {
+private:
+    static const int MAX = 100;  // Maximum size of the stack
+    T arr[MAX];
+    int top;
+
+public:
+    Stack() : top(-1) {}
+
+    // Push element onto stack
+    void push(T value) {
+        if (top >= MAX - 1) {
+            cout << "Stack Overflow\n";
+            return;
+        }
+        arr[++top] = value;
+    }
+
+    // Pop element from stack
+    void pop() {
+        if (top < 0) {
+            cout << "Stack Underflow\n";
+            return;
+        }
+        cout << "Popped: " << arr[top--] << endl;
+    }
+
+    // Display all elements
+    void display() const {
+        if (top < 0) {
+            cout << "Stack is empty\n";
+            return;
+        }
+        cout << "Stack elements:\n";
+        for (int i = top; i >= 0; --i) {
+            cout << arr[i] << endl;
+        }
+    }
+};
