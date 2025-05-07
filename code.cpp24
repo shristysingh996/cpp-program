@@ -1,0 +1,36 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cctype>
+
+int main() {
+    std::ifstream inputFile("input.txt");    // Open input file for reading
+    std::ofstream outputFile("output.txt");  // Open output file for writing
+
+    // Check if files opened successfully
+    if (!inputFile) {
+        std::cerr << "Error opening input file!" << std::endl;
+        return 1;
+    }
+    if (!outputFile) {
+        std::cerr << "Error opening output file!" << std::endl;
+        return 1;
+    }
+
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        // Convert line to uppercase
+        for (char &ch : line) {
+            ch = std::toupper(ch);
+        }
+        // Write the converted line to output file
+        outputFile << line << std::endl;
+    }
+
+    // Close files
+    inputFile.close();
+    outputFile.close();
+
+    std::cout << "File processing completed. Check 'output.txt'." << std::endl;
+    return 0;
+}
