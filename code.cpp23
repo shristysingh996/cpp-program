@@ -1,0 +1,162 @@
+#include <iostream>
+#include <vector>
+#include <stdexcept>  // For exception handling
+
+using namespace std;
+
+// Abstract base class for all collections
+template <typename T>
+class Collection {
+public:
+    virtual void add(const T& item) = 0;  // Pure virtual function to add an item
+    virtual void remove() = 0;  // Pure virtual function to remove an item
+    virtual void display() const = 0;  // Pure virtual function to display the collection
+    virtual ~Collection() {}  // Virtual destructor for cleanup
+};
+
+// Derived class representing a List (vector-based implementation)
+template <typename T>
+class List : public Collection<T> {
+private:
+    vector<T> data;
+public:
+    // Add item to the list
+    void add(const T& item) override {
+        data.push_back(item);
+    }
+
+    // Remove item from the list (remove last element)
+    void remove() override {
+        if (data.empty()) {
+            throw out_of_range("List is empty! Cannot remove an item.");
+        }
+        data.pop_back();
+    }
+
+    // Display the list
+    void display() const override {
+        if (data.empty()) {
+            cout << "List is empty." << endl;
+            return;
+        }
+        for (const auto& item : data) {
+            cout << item << " ";
+        }
+        cout << endl;
+    }
+};
+
+// Derived class representing a Stack (LIFO - Last In, First Out)
+template <typename T>
+class Stack : public Collection<T> {
+private:
+    vector<T> data;
+public:
+    // Add item to the stack
+    void add(const T& item) override {
+        data.push_back(item);
+    }
+
+    // Remove item from the stack (pop the last item)
+    void remove() override {
+        if (data.empty()) {
+            throw out_of_range("Stack is empty! Cannot pop an item.");
+        }
+        data.pop_back();
+    }
+
+    // Display the stack
+    void display() const override {
+        if (data.empty()) {
+            cout << "Stack is empty." << endl;
+            return;
+        }
+        for (const auto& item : data) {
+            cout << item << " ";
+        }
+        cout << endl;
+    }
+};
+
+// Derived class representing a Queue (FIFO - First In, First Out)
+template <typename T>
+class Queue : public Collection<T> {
+private:
+    vector<T> data;
+public:
+    // Add item to the queue (enqueue)
+    void add(const T& item) override {
+        data.push_back(item);
+    }
+
+    // Remove item from the queue (dequeue)
+    void remove() override {
+        if (data.empty()) {
+            throw out_of_range("Queue is empty! Cannot dequeue an item.");
+        }
+        data.erase(data.begin());
+    }
+
+    // Display the queue
+    void display() const override {
+        if (data.empty()) {
+            cout << "Queue is empty." << endl;
+            return;
+        }
+        for (const auto& item : data) {
+            cout << item << " ";
+        }
+        cout << endl;
+    }
+};
+
+// Function to demonstrate polymorphic behavior for any collection
+template <typename T>
+void demoCollection(Collection<T>& collection) {
+    try {
+        collection.add(10);
+        collection.add(20);
+        collection.add(30);
+
+        cout << "Collection contents: ";
+        collection.display();
+
+        collection.remove();
+        cout << "After remove: ";
+        collection.display();
+
+        collection.remove();
+        cout << "After another remove: ";
+        collection.display();
+
+        collection.remove();
+        cout << "After last remove: ";
+        collection.display();
+
+        // Try to remove from an empty collection
+        collection.remove();
+    } catch (const exception& e) {
+        cout << "Exception: " << e.what() << endl;
+    }
+}
+
+int main() {
+    // Create instances of the different collections
+    List<int> myList;
+    Stack<int> myStack;
+    Queue<int> myQueue;
+
+    // Demonstrate the polymorphic behavior of different collections
+    cout << "Demoing List:" << endl;
+    demoCollection(myList);
+
+    cout << "\nDemoing Stack:" << endl;
+    demoCollection(myStack);
+
+    cout << "\nDemoing Queue:" << endl;
+    demoCollection(myQueue);
+
+    return 0;
+}
+
+
