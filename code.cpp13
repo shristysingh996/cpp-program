@@ -1,0 +1,48 @@
+#include <iostream>
+#include <memory>  // for smart pointers
+using namespace std;
+
+// A simple class to demonstrate dynamic memory usage
+class Book {
+public:
+    string title;
+
+    Book(const string& t) : title(t) {
+        cout << "Book \"" << title << "\" created.\n";
+    }
+
+    void read() const {
+        cout << "Reading \"" << title << "\"...\n";
+    }
+
+    ~Book() {
+        cout << "Book \"" << title << "\" destroyed.\n";
+    }
+};
+
+int main() {
+    cout << "--- Using unique_ptr ---\n";
+    {
+        unique_ptr<Book> book1 = make_unique<Book>("C++ Fundamentals");
+        book1->read();
+
+        // unique_ptr cannot be copied
+        // unique_ptr<Book> book2 = book1; // ❌ Error
+    } // book1 goes out of scope, memory is freed automatically
+
+    cout << "\n--- Using shared_ptr ---\n";
+    shared_ptr<Book> sharedBook1;
+    {
+        shared_ptr<Book> sharedBook2 = make_shared<Book>("Smart Pointers in Depth");
+        sharedBook1 = sharedBook2; // Now both share ownership
+        sharedBook2->read();
+        sharedBook1->read();
+        cout << "Shared count: " << sharedBook1.use_count() << endl;
+    } // sharedBook2 goes out of scope, but book not deleted because sharedBook1 still exists
+
+    cout << "Shared count after sharedBook2 is out of scope: " << sharedBook1.use_count() << endl;
+    sharedBook1->read();
+    // sharedBook1 goes out of scope here, memory is freed
+
+    return 0;
+}
