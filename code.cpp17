@@ -1,0 +1,49 @@
+#include <iostream>
+using namespace std;
+
+// A simple callback function that squares a number
+int square(int x) {
+    return x * x;
+}
+
+// Another callback function that doubles the value of a number
+int doubleValue(int x) {
+    return x * 2;
+}
+
+// Function that accepts a callback function pointer as an argument
+void processData(int* arr, int size, int (*callback)(int)) {
+    for (int i = 0; i < size; ++i) {
+        arr[i] = callback(arr[i]);
+    }
+}
+
+// Function to display the array contents
+void displayArray(int* arr, int size) {
+    for (int i = 0; i < size; ++i) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    // Create an array of integers
+    int arr[] = {1, 2, 3, 4, 5};
+    int size = sizeof(arr) / sizeof(arr[0]);
+
+    // Display original array
+    cout << "Original array: ";
+    displayArray(arr, size);
+
+    // Use callback function square to process the array
+    processData(arr, size, square);
+    cout << "Array after applying 'square' callback: ";
+    displayArray(arr, size);
+
+    // Use callback function doubleValue to process the array
+    processData(arr, size, doubleValue);
+    cout << "Array after applying 'doubleValue' callback: ";
+    displayArray(arr, size);
+
+    return 0;
+}
