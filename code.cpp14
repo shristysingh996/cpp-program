@@ -1,0 +1,37 @@
+#include <iostream>
+#include <stdexcept>  // For std::out_of_range
+using namespace std;
+
+// Template SafeArray class
+template <typename T>
+class SafeArray {
+private:
+    T* arr;
+    int size;
+
+public:
+    // Constructor
+    SafeArray(int s) {
+        if (s <= 0)
+            throw invalid_argument("Array size must be positive.");
+        size = s;
+        arr = new T[size];
+    }
+
+    // Overload [] with bounds checking
+    T& operator[](int index) {
+        if (index < 0 || index >= size)
+            throw out_of_range("Index out of bounds.");
+        return arr[index];
+    }
+
+    // Getter for size
+    int getSize() const {
+        return size;
+    }
+
+    // Destructor
+    ~SafeArray() {
+        delete[] arr;
+    }
+};
